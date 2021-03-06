@@ -1,0 +1,17 @@
+Add amp pages
+transalation
+request social apis and details
+deploy to locally created server like postgres
+deploy through heroku
+save statics through aws like server
+add theme based html like hero or something
+add admin dashboard editing options with ease, external file with colors and fonts init
+add theme editing options to admin dashboard
+add keys and stuff to a external file
+create a step by step what to do process to change name and stuff
+ajax templates wherever needed
+improve cachicg
+improve analytics
+try to integrate grammarly api to spell check
+detect browsers and change template kinda thing
+user based changes - personlization

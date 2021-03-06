@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/v2/', api_router.urls),
 
     url(r'^sitemap.xml$', sitemap),
+    path('', include('allauth.urls')),
 ]
 
 

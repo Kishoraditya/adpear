@@ -146,6 +146,28 @@ class BlogCategory(models.Model):
 
 register_snippet(BlogCategory)
 
+class BlogChildPagesSerializer(Field):
+    def to_representation(self, child_pages):
+        # logic in here
+        return_posts = []
+        for child in child_pages:
+            post_dict = {
+                'id': child.id,
+                'title': child.title,
+                'slug': child.slug,
+                'url': child.url,
+            }
+            return_posts.append(post_dict)
+        return return_posts
+        # Pythonic comprehensions
+        # return [
+        #     {
+        #         'id': child.id,
+        #         'title': child.title,
+        #         'slug': child.slug,
+        #         'url': child.url,
+        #     } for child in child_pages
+        # ]
 
 
 class BlogListingPage(RoutablePageMixin, Page):
@@ -166,6 +188,15 @@ class BlogListingPage(RoutablePageMixin, Page):
     content_panels = Page.content_panels + [
         FieldPanel("custom_title"),
     ]
+    
+    api_fields = [
+        APIField("posts", serializer=BlogChildPagesSerializer(source='get_child_pages')),
+    ]
+
+    @property
+    def get_child_pages(self):
+        return self.get_children().public().live()
+        # return self.get_children().public().live().values("id", "title", "slug")
 
     def get_context(self, request, *args, **kwargs):
         """Adding custom stuff to our context."""
@@ -199,6 +230,48 @@ class BlogListingPage(RoutablePageMixin, Page):
         context["categories"] = BlogCategory.objects.all()
         return context
     
+    @route(r"^july-2019/$", name="july_2019")
+    @route(r"^year/(\d+)/(\d+)/$", name="blogs_by_year")
+    def blogs_by_year(self, request, year=None, month=None):
+        context = self.get_context(request)
+        # Implement your BlogDetailPage filter. Maybe something like this:
+        # if year is not None and month is not None:
+        #     posts = BlogDetailPage.objects.live().public().filter(year=year, month=month)
+        # else:
+        #     # No year and no month were set, assume this is july-2019 only posts
+        #     posts = BlogDetailPage.objects.live().public().filter(year=2019, month=07)
+        # print(year)
+        # print(month)
+        # context["posts"] = posts
+
+        # Note: The below template (latest_posts.html) will need to be adjusted
+        return render(request, "blog/latest_posts.html", context)
+
+    @route(r"^category/(?P<cat_slug>[-\w]*)/$", name="category_view")
+    def category_view(self, request, cat_slug):
+        """Find blog posts based on a category."""
+        context = self.get_context(request)
+
+        try:
+            # Look for the blog category by its slug.
+            category = BlogCategory.objects.get(slug=cat_slug)
+        except Exception:
+            # Blog category doesnt exist (ie /blog/category/missing-category/)
+            # Redirect to self.url, return a 404.. that's up to you!
+            category = None
+
+        if category is None:
+            # This is an additional check.
+            # If the category is None, do something. Maybe default to a particular category.
+            # Or redirect the user to /blog/ ¯\_(ツ)_/¯
+            pass
+
+        context["posts"] = BlogDetailPage.objects.live().public().filter(categories__in=[category])
+
+        # Note: The below template (latest_posts.html) will need to be adjusted
+        return render(request, "blog/latest_posts.html", context)
+
+
     @route(r'^latest/$', name="latest_posts")
     def latest_blog_posts_only_shows_last_5(self, request, *args, **kwargs):
         context = self.get_context(request, *args, **kwargs)

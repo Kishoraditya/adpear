@@ -72,12 +72,17 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    
+    'userauth',
+    'django_countries',
+    'widget_tweaks',
 ]
 
 SITE_ID = 1
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -95,6 +100,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(PROJECT_DIR, 'templates'),
+#            os.path.join(BASE_DIR, 'userauth/templates/userauth/'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -108,6 +114,13 @@ TEMPLATES = [
         },
     },
 ]
+
+
+WAGTAIL_USER_CREATION_FORM = 'userauth.forms.WagtailUserCreationForm'
+WAGTAIL_USER_EDIT_FORM = 'userauth.forms.WagtailUserEditForm'
+WAGTAIL_USER_CUSTOM_FIELDS = ['display_name', 'date_of_birth', 'address1', 'address2', 'zip_code', 'city', 'country', 'mobile_phone', 'additional_information', 'photo',]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 AUTHENTICATION_BACKENDS = [
 
@@ -133,8 +146,8 @@ DATABASES = {
         'PASSWORD': 'Toopostgres_7410',
         'HOST': '',
         'PORT': '',
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #        'ENGINE': 'django.db.backends.postgresql_psycopg2',
 #        'NAME': 'demo',
 #        'USER': 'postgres',
@@ -167,7 +180,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
 
@@ -176,6 +189,16 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+LANGUAGES = [
+    ('en', 'English'),
+    ('fr', 'Français'),
+    ('nl', 'Nederlands'),
+    ('hi', 'Hindi'),
+]
+
+
+LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale'),)
 
 
 # Static files (CSS, JavaScript, Images)
@@ -225,11 +248,17 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
-ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_LOGOUT_ON_GET = False
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 ACCOUNT_LOGOUT_REDIRECT_URL = '/login/'
 ACCOUNT_PRESERVE_USERNAME_CASING = False
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
-ACCOUNT_USERNAME_BLACKLIST = ["kishoraditya", "admin"]
+ACCOUNT_USERNAME_BLACKLIST = ["", ""]
 ACCOUNT_USERNAME_MIN_LENGTH = 2
+
+
+# custom user model
+
+AUTH_USER_MODEL = 'userauth.Customuser'
+ACCOUNT_SIGNUP_FORM_CLASS = 'userauth.forms.SignupForm'

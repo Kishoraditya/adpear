@@ -4,6 +4,7 @@ from django.conf.urls import url
 from django.urls import include, path
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls.i18n import i18n_patterns
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
@@ -26,9 +27,14 @@ urlpatterns = [
     path('api/v2/', api_router.urls),
 
     url(r'^sitemap.xml$', sitemap),
-    path('', include('allauth.urls')),
+    #path('', include('allauth.urls')),
+    #path('', include('userauth.urls')),
 ]
 
+urlpatterns += i18n_patterns(
+    path('', include('allauth.urls')),
+    path('', include('userauth.urls')),
+)
 
 if settings.DEBUG:
     from django.conf.urls.static import static

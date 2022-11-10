@@ -34,6 +34,9 @@ INSTALLED_APPS = [
     'menus',
     'contact',
     'core',
+    
+    'wagtail_localize',
+    'wagtail_localize.locales',
 
     'wagtail.contrib.forms',
     'wagtail.contrib.modeladmin',
@@ -82,13 +85,14 @@ SITE_ID = 1
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    
+    'django.middleware.locale.LocaleMiddleware',
 
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 ]
@@ -108,6 +112,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.i18n',
                 'django.contrib.messages.context_processors.messages',
                 'wagtail.contrib.settings.context_processors.settings',
             ],
@@ -190,10 +195,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-LANGUAGES = [
+WAGTAIL_I18N_ENABLED =True
+
+
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
     ('en', 'English'),
     ('fr', 'Français'),
-    ('nl', 'Nederlands'),
+    ('es', 'Spanish'),
     ('hi', 'Hindi'),
 ]
 
@@ -231,7 +239,7 @@ WAGTAIL_SITE_NAME = "adpear"
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
-BASE_URL = 'http://example.com'
+WAGTAILADMIN_BASE_URL = 'http://example.com'
 
 
 # Recaptcha settings

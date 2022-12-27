@@ -1,7 +1,7 @@
 import debug_toolbar
 from django.conf import settings
-from django.conf.urls import re_path
-from django.urls import include, path
+#from django.conf.urls import re_path
+from django.urls import include, path, re_path
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls.i18n import i18n_patterns
@@ -27,9 +27,10 @@ urlpatterns = [
     path('api/v2/', api_router.urls),
 
     re_path(r'^sitemap.xml$', sitemap),
+    path('i18n/', include('django.conf.urls.i18n')),
     #path('', include('allauth.urls')),
     #path('', include('userauth.urls')),
-]
+] + i18n_patterns()
 
 urlpatterns += i18n_patterns(
     path('', include('allauth.urls')),
@@ -50,6 +51,7 @@ urlpatterns = urlpatterns + i18n_patterns(
     # the list:
     path('search/', search_views.search, name='search'),
     path("", include(wagtail_urls)),
+    #path("pages/", include(wagtail_urls)),
     prefix_default_language=False,
 
     # Alternatively, if you want Wagtail pages to be served from a subpath
